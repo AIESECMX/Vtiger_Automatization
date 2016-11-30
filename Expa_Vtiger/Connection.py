@@ -17,19 +17,26 @@ def sync_LCs():
 	vt_lcs = vt_lcs['result']
 	print vt_lcs
 	lcs = gis.getLCs()
+	jump = False
 	for lc in lcs:
+		jump = False
 		for lcv in vt_lcs:
-			if lc.id == lcv['expa_id']:
+			if str(lc.id) == lcv['expa_id']:
 				#update
 				print 'ya existe '+lc.name
-			else:
-				#create
-				print 'create '+lc.name
-				data ={'expa_id':lc.id,
-					'cf_806':lc.name,#name
+				jump = True
+				break
+		#
+		if jump:
+			continue
+		#create
+		print 'create '+lc.name
+		data ={'expa_id':lc.id,
+					'cf_806':lc.name,
+					'cf_877':lc.name					
 					}
-				#
-				vtiger.create(json.dumps(data),'LC');
+		#
+		vtiger.create(json.dumps(data),'LC');
 
 
 #
@@ -206,5 +213,5 @@ def update_test():
 
 
 #()
-update_test()
+sync_LCs()
 

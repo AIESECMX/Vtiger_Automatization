@@ -56,6 +56,7 @@ class VTiger:
 		r = requests.post("http://knowledge.aiesec.org.mx/vtigercrm/webservice.php",
 			data={'operation': 'create', 'sessionName': self.sessionId,
 			'element':encodedData,'elementType':elementType})
+		print r.text
 		d = json.loads(r.text)
 		print d
 
