@@ -2,7 +2,7 @@
 
 class Opportunity:
 
-	def __init__(self,expaid,title,url,programme,start_date,end_date,appsClosed,created,updated,status):	
+	def __init__(self,expaid,title,url,programme,start_date,end_date,appsClosed,created,updated,status,lc,enabler):	
 		self.id = expaid
 		self.title = title
 		self.url = url
@@ -13,7 +13,8 @@ class Opportunity:
 		self.created=created
 		self.updated=updated
 		self.status=status
-		
+		self.lc	=lc
+		self.enabler=enabler
 
 
 	

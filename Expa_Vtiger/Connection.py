@@ -21,7 +21,7 @@ def sync_LCs():
 	for lc in lcs:
 		jump = False
 		for lcv in vt_lcs:
-			if str(lc.id) == lcv['expa_id']:
+			if str(lc.id) == lcv['lc_id']:
 				#update
 				print 'ya existe '+lc.name
 				jump = True
@@ -31,9 +31,8 @@ def sync_LCs():
 			continue
 		#create
 		print 'create '+lc.name
-		data ={'expa_id':lc.id,
-					'cf_806':lc.name,
-					'cf_877':lc.name					
+		data ={'lc_id':lc.id,
+					'name':lc.name					
 					}
 		#
 		vtiger.create(json.dumps(data),'LC');
@@ -46,17 +45,18 @@ def sync_Enablers():
 	vt_ens = vt_ens['result']
 	print vt_ens
 	ens = gis.getEnablers()
+	print ens
 	jump = False
 	for en in ens:
 		jump = False
 		print 'expa:'+str(en.id)
 		for env in vt_ens:
-			print 'vtiger:'+env['expa_id']
-			if str(en.id) == env['expa_id']:
+			print 'vtiger:'+env['enabler_id']
+			if str(en.id) == env['enabler_id']:
 				#update
 				print 'ya existe '+en.name
-				if en.status != env['cf_824']:
-					env['cf_824'] = en.status
+				if en.status != env['status']:
+					env['status'] = en.status
 					v = json.dumps(env)
 					vtiger.update(v)
 					print 'status update for :'+en.name
@@ -67,16 +67,16 @@ def sync_Enablers():
 			
 		#create
 		print 'create '+en.name
-		data ={'expa_id':en.id,
-					'cf_808':en.name,#name
-					'cf_810':en.url,#url
-					'cf_812':en.website,#website
-					'cf_814':en.summary,#summary
-					'cf_816':en.gep,#ge
-					'cf_818':en.fromCop,#fromCop
-					'cf_820':en.tipo,#tipo
-					'cf_822':en.size,#size
-					'cf_824':en.status#status
+		data ={'enabler_id':en.id,
+					'name':en.name,#name
+					'url':en.url,#url
+					'website':en.website,#website
+					'summary':en.summary,#summary
+					'ge':en.gep,#ge
+					'from_cop':en.fromCop,#fromCop
+					'type':en.tipo,#tipo
+					'size':en.size,#size
+					'status':en.status#status
 					}
 		#
 		vtiger.create(json.dumps(data),'Enabler');
@@ -91,18 +91,18 @@ def sync_Opps():
 	for op in opps:
 		jump = False
 		for opv in vt_opps:
-			if str(op.id) == opv['expa_id']:
+			if str(op.id) == opv['opportunity_id']:
 				update = False
 				#update
 				enddate =op.end_date[:10] if op.end_date is not None else ''
 				appsClosed = op.appsClosed[:10]  if op.appsClosed is not None else ''
 				start_date = op.start_date[:10]  if op.start_date is not None else ''
 				updated = op.updated[:10]  if op.updated is not None else ''
-				opv['cf_774'] = (enddate if enddate is not opv['cf_774'] else opv['cf_774'])
-				opv['cf_776'] = (appsClosed if appsClosed is not opv['cf_776'] else opv['cf_776'])
-				opv['cf_772'] = (start_date if start_date is not opv['cf_772'] else opv['cf_772'])
-				opv['cf_780'] = (updated if updated is not opv['cf_780'] else opv['cf_780'])
-				opv['cf_782'] = op.status
+				opv['end_date'] = (enddate if enddate is not opv['end_date'] else opv['end_date'])
+				opv['apps_closed'] = (appsClosed if appsClosed is not opv['apps_closed'] else opv['apps_closed'])
+				opv['start_date'] = (start_date if start_date is not opv['start_date'] else opv['start_date'])
+				opv['updated'] = (updated if updated is not opv['updated'] else opv['updated'])
+				opv['status'] = op.status
 				vtiger.update(json.dumps(opv))
 				print 'update a : '+op.title
 				jump = True
@@ -111,16 +111,16 @@ def sync_Opps():
 			continue
 		#create
 		print 'create '+op.created
-		data ={'expa_id':op.id,
-					'cf_774':op.end_date[:10] if op.end_date is not None else '',#end date
-					'cf_776':op.appsClosed[:10]  if op.appsClosed is not None else '',#app close
-					'cf_770':op.url,#url
-					'cf_772':op.start_date[:10]  if op.start_date is not None else '',#strts date
-					'cf_780':op.updated[:10]  if op.updated is not None else '',#updated
-					'cf_782':op.status,#status
-					'cf_778':op.created[:10]  if op.created is not None else '',#created
-					'cf_768':op.title,#name
-					'cf_836':op.programme
+		data ={'opportunity_id':op.id,
+					'end_date':op.end_date[:10] if op.end_date is not None else '',#end date
+					'apps_closed':op.appsClosed[:10]  if op.appsClosed is not None else '',#app close
+					'url':op.url,#url
+					'start_date':op.start_date[:10]  if op.start_date is not None else '',#strts date
+					'updated':op.updated[:10]  if op.updated is not None else '',#updated
+					'status':op.status,#status
+					'created':op.created[:10]  if op.created is not None else '',#created
+					'title':op.title,#name
+					'programme':op.programme
 					}
 		#
 		vtiger.create(json.dumps(data),'Opportunity');
@@ -135,15 +135,14 @@ def sync_People():
 	for person in people:
 		jump = False
 		for vt_person in vt_people:
-			if str(person.id) == vt_person['expa_id']:
+			if str(person.id) == vt_person['people_id']:
 				#update
 				print 'update a '+person.name
 				updated =person.updatedAt[:10] if person.updatedAt is not None else ''
 				contacted = person.contactedAt[:10] if person.contactedAt is not None else ''
-				vt_person['cf_796'] = (updated if updated is not vt_person['cf_796'] else vt_person['cf_796'])
-				vt_person['cf_794'] = (contacted if contacted is not vt_person['cf_794'] else vt_person['cf_794'])
-				vt_person['cf_788'] = person.phone
-				vt_person['cf_800'] = person.status
+				vt_person['updated'] = (updated if updated is not vt_person['updated'] else vt_person['updated'])
+				vt_person['contacted_at'] = (contacted if contacted is not vt_person['contacted_at'] else vt_person['contacted_at'])
+				vt_person['phone'] = person.phone
 				vtiger.update(json.dumps(vt_person))
 				print 'update a '+person.name
 				jump = True
@@ -152,17 +151,16 @@ def sync_People():
 			continue
 		#create
 		print 'create '+person.name
-		data ={'expa_id':person.id,
-					'cf_796':person.updatedAt[:10] if person.updatedAt is not None else '',#updated at
-					'cf_802':person.program,#program
-					'cf_794':person.createdAt[:10] if person.createdAt is not None else '',#created at
-					'cf_792':person.contactedAt[:10] if person.contactedAt is not None else '',#contacted at
-					'cf_790':person.email,#mail
-					'cf_798':person.role,#role
-					'cf_788':person.phone,#phone
-					'cf_784':person.name,#nonmbre
-					'cf_800':person.status,#status
-					'cf_786':person.url#url
+		data ={'people_id':person.id,
+					'updated':person.updatedAt[:10] if person.updatedAt is not None else '',#updated at
+					'programme':person.program,#program
+					'created':person.createdAt[:10] if person.createdAt is not None else '',#created at
+					'contacted_at':person.contactedAt[:10] if person.contactedAt is not None else '',#contacted at
+					'email':person.email,#mail
+					'role':person.role,#role
+					'phone':person.phone,#phone
+					'name':person.name,#nonmbre
+					'url':person.url#url
 					}
 		#
 		vtiger.create(json.dumps(data),'People');
@@ -180,8 +178,8 @@ def sync_Apps():
 		for appv in vt_apps:
 			if str(app.id) == appv['expa_id']:
 				#update
-				appv['cf_843']=app.currentStatus
-				appv['cf_841']=app.status
+				appv['current_status']=app.currentStatus
+				appv['status']=app.status
 				vtiger.update(json.dumps(appv))
 				print 'update '+app.url
 				jump = True
@@ -192,11 +190,9 @@ def sync_Apps():
 		#create
 		print 'create '+app.url
 		data ={'expa_id':app.id,
-					'cf_839':app.url,#url
-					'cf_843':app.currentStatus,#current status
-					'cf_841':app.status,#status
-					'cf_847':app.oppid,#opp
-					'cf_845':app.personid#person
+					'url':app.url,#url
+					'current_status':app.currentStatus,#current status
+					'status':app.status#status
 					}
 		#
 		vtiger.create(json.dumps(data),'Application');
@@ -204,7 +200,7 @@ def sync_Apps():
 
 #def
 def update_test():
-	apps_query = 'select * from Contacts ;'
+	apps_query = 'select * from Application ;'
 	vt_apps = vtiger.query(apps_query)
 	vt_apps = vt_apps['result'][0]
 	v = json.dumps(vt_apps)
@@ -213,5 +209,4 @@ def update_test():
 
 
 #()
-sync_LCs()
-
+sync_People()

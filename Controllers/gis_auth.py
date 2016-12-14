@@ -67,10 +67,10 @@ class GIS:
         #print d
         ops = []
         for op in d['data']:
-            #def __init__(self,expaid,title,url,programme,start_date,end_date,appsClosed,created,updated,status):  
+            #def __init__(self,expaid,title,url,programme,start_date,end_date,appsClosed,created,updated,status,lc,enabler): 
             ops.append(Opportunity(op['id'],op['title'],op['url'],
                 op['programmes']['short_name'],op['earliest_start_date'],op['latest_end_date'],
-                op['applications_close_date'],op['created_at'],op['updated_at'],op['status']))
+                op['applications_close_date'],op['created_at'],op['updated_at'],op['status'],None,None))
         #
         return ops
 

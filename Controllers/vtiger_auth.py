@@ -10,14 +10,14 @@ class VTiger:
 	def __init__(self):
 		self.sessionId = ''
 		self.userId = ''
-		r = requests.get("http://knowledge.aiesec.org.mx/vtigercrm/webservice.php?operation=getchallenge&username=admin")
+		r = requests.get("http://knowledge.aiesec.org.mx/crm_test/webservice.php?operation=getchallenge&username=admin")
 		d = json.loads(r.text)
 		self.challenge = d['result']['token']
 		m = hashlib.md5()
-		m.update(self.challenge+'wEB99P8LZP4Nac3')
+		m.update(self.challenge+'qmiRUmUlOxew5Pyr')
 		md5 = m.hexdigest()
 		#print md5
-		r = requests.post("http://knowledge.aiesec.org.mx/vtigercrm/webservice.php",
+		r = requests.post("http://knowledge.aiesec.org.mx/crm_test/webservice.php",
 			data={'operation': 'login', 'username': 'admin', 'accessKey': md5})
 		d = json.loads(r.text)
 		self.sessionId = d['result']['sessionName']
@@ -27,7 +27,7 @@ class VTiger:
 
 	#logout
 	def close(self):
-		r = requests.post("http://knowledge.aiesec.org.mx/vtigercrm/webservice.php",
+		r = requests.post("http://knowledge.aiesec.org.mx/crm_test/webservice.php",
 			data={'operation': 'logout', 'sessionName': self.sessionId})
 		d = json.loads(r.text)
 		return None
@@ -40,7 +40,7 @@ class VTiger:
 	#[ORDER BY <column_list>]
 	#[LIMIT [<m>, ] <n>]
 	def query(self,query):
-		url = 'http://knowledge.aiesec.org.mx/vtigercrm/webservice.php?operation=query&sessionName='+self.sessionId+'&query='+query
+		url = 'http://knowledge.aiesec.org.mx/crm_test/webservice.php?operation=query&sessionName='+self.sessionId+'&query='+query
 		#print url
 		r = requests.get(url)
 		d = json.loads(r.text)
@@ -53,7 +53,7 @@ class VTiger:
 	#elementType=<TYPE>           // TYPE - Module Name
 	def create(self,encodedData,elementType):
 		print encodedData
-		r = requests.post("http://knowledge.aiesec.org.mx/vtigercrm/webservice.php",
+		r = requests.post("http://knowledge.aiesec.org.mx/crm_test/webservice.php",
 			data={'operation': 'create', 'sessionName': self.sessionId,
 			'element':encodedData,'elementType':elementType})
 		print r.text
@@ -65,7 +65,7 @@ class VTiger:
 	#sessionName=sessionId    // Obtained through Login Operation
 	#element=URLENCODED(DATA) // DATA - Map of (fieldname=fieldvalue)
 	def update(self,encodedData):
-		r = requests.post("http://knowledge.aiesec.org.mx/vtigercrm/webservice.php",
+		r = requests.post("http://knowledge.aiesec.org.mx/crm_test/webservice.php",
 			data={'operation': 'update', 'sessionName': self.sessionId,
 			'element':encodedData})
 		d = r.text
